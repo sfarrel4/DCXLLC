@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+	<servlet>
+		<servlet-name>DcxLLC</servlet-name>
+		<servlet-class>com.dcxllc.dev.DCXAdminSiteServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DcxLLC</servlet-name>
+		<url-pattern>/dcxllc</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>CreateAdminServlet</servlet-name>
+		<servlet-class>com.dcxllc.dev.CreateAdminServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CreateAdminServlet</servlet-name>
+		<url-pattern>/create-admin</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>LoginServlet</servlet-name>
+		<servlet-class>com.dcxllc.dev.LoginServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LoginServlet</servlet-name>
+		<url-pattern>/login</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>LogoutServlet</servlet-name>
+		<servlet-class>com.dcxllc.dev.LogoutServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>LogoutServlet</servlet-name>
+		<url-pattern>/logout</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>CreateEmployeeServlet</servlet-name>
+		<servlet-class>com.dcxllc.dev.CreateEmployeeServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CreateEmployeeServlet</servlet-name>
+		<url-pattern>/create-employee</url-pattern>
+	</servlet-mapping>
+	
+	<servlet>
+		<servlet-name>CreateClientServlet</servlet-name>
+		<servlet-class>com.dcxllc.dev.CreateClientServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>CreateClientServlet</servlet-name>
+		<url-pattern>/create-client</url-pattern>
+	</servlet-mapping>
+	
+	
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+</web-app>
