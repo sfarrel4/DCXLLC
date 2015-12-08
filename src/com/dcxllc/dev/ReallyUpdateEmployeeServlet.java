@@ -8,33 +8,33 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-public class CreateEmployeeServlet extends HttpServlet {
+public class ReallyUpdateEmployeeServlet extends HttpServlet {
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		doPost(req, resp);
 	}
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		
-		String username = req.getParameter("username");
-		String password = req.getParameter("password");
+		PersistenceManager pm = PMF.get().getPersistenceManager();
+		Long empID = Long.valueOf(req.getParameter("empID")).longValue();
 		String firstName = req.getParameter("firstName");
 		String lastName = req.getParameter("lastName");
 		String mainEmail = req.getParameter("mainEmail");
 		String phoneNumber = req.getParameter("phoneNumber");
-		PersistenceManager pm = PMF.get().getPersistenceManager();
-		EmployeeAccount a = new EmployeeAccount(username, password, firstName, lastName, mainEmail, phoneNumber);
 		try{
-			pm.makePersistent(a);
+			EmployeeAccount e = pm.getObjectById(EmployeeAccount.class, empID );
+			e.setFirstName(firstName);
+			e.setLastName(lastName);
+			e.setMainEmail(mainEmail);
+			e.setPhoneNumber(phoneNumber);
 			
 		}
-		catch(Exception e){
-			e.printStackTrace();
+		catch(Exception ex){
+			ex.printStackTrace();
 		}
 		finally{
 			pm.close();
 		}
-		
 		resp.sendRedirect("adminPanel.jsp");
+		
 	}
-
 }

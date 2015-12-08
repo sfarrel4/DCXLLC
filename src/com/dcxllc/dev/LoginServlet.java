@@ -38,7 +38,8 @@ public class LoginServlet extends HttpServlet {
 			for(int i=0; i<employeeUsers.size(); i++){
 				if(username.equalsIgnoreCase(employeeUsers.get(i).getUsername()) && password.equals(employeeUsers.get(i).getPassword())){
 					authUser = true;
-					 Cookie loginCookie = new Cookie("username",username);
+					String empID = String.valueOf(employeeUsers.get(i).getId());
+					 Cookie loginCookie = new Cookie("username",empID);
 					 loginCookie.setMaxAge(30*60);
 					 resp.addCookie(loginCookie);
 					 resp.sendRedirect("employeePage.jsp");
@@ -49,18 +50,16 @@ public class LoginServlet extends HttpServlet {
 			for(int i=0; i<clientUsers.size(); i++){
 				if(username.equalsIgnoreCase(clientUsers.get(i).getUsername()) && password.equals(clientUsers.get(i).getPassword())){
 					authUser = true;
-					 Cookie loginCookie = new Cookie("username",username);
+					String custID = String.valueOf(clientUsers.get(i).getId());
+					 Cookie loginCookie = new Cookie("username",custID);
 					 loginCookie.setMaxAge(30*60);
 					 resp.addCookie(loginCookie);
 					 resp.sendRedirect("clientPage.jsp");
 					
 				}
 			}
-			if(authUser){
-				resp.sendRedirect("success.jsp");
-			}
-			else{
-				resp.sendRedirect("failure.jsp");
+			if(!authUser){
+				resp.sendRedirect("index.html");
 			}
 	}
 

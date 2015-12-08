@@ -1,4 +1,10 @@
 <!DOCTYPE html>
+<%@ page import="java.util.List" %>
+<%@ page import="com.dcxllc.dev.ClientAccount" %>
+<%@ page import="com.dcxllc.dev.EmployeeAccount" %>
+<%@ page import="javax.jdo.PersistenceManager" %>
+<%@ page import="com.dcxllc.dev.PMF" %>
+<%@ page import="javax.jdo.Query" %>
 <html>
   <head>
     <meta charset="utf-8">
@@ -46,7 +52,10 @@
     		if(cookie.getName().equals("username")) userName = cookie.getValue();
 		}
 	}
-if(userName == null) response.sendRedirect("index.html");
+	if(userName == null) response.sendRedirect("index.html");
+	List<EmployeeAccount> allEmployeeAccounts = EmployeeAccount.getAllEmployee();
+	List<ClientAccount> allClientAccounts = ClientAccount.getAllClient();
+
 %>
     <div class="wrapper">
 
@@ -145,7 +154,7 @@ if(userName == null) response.sendRedirect("index.html");
               <img src="images/logo.png" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
-              <p><%=userName %></p>
+              <p>DCXLLC ADMIN</p>
             </div>
           </div>
           <!-- search form -->
@@ -231,26 +240,26 @@ if(userName == null) response.sendRedirect("index.html");
               <!-- small box -->
               <div class="small-box bg-aqua">
                 <div class="inner">
-                  <h3>15</h3>
+                  <h3><%=allClientAccounts.size() %></h3>
                   <p>Clients</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-person-stalker"></i>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="viewClients.jsp" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
               </div>
             </div><!-- ./col -->
             <div class="col-lg-3 col-xs-6">
               <!-- small box -->
               <div class="small-box bg-green">
                 <div class="inner">
-                  <h3>4</h3>
+                  <h3><%= allEmployeeAccounts.size()%></h3>
                   <p>Employees</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-person-stalker"></i>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="viewEmployees.jsp" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
               </div>
             </div><!-- ./col -->
           </div><!-- /.row -->

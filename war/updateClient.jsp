@@ -6,6 +6,7 @@
 <%@ page import="javax.jdo.Query" %>
 <html>
   <head>
+  
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>DCXLLC | Admin</title>
@@ -230,50 +231,41 @@ if(userName == null) response.sendRedirect("index.html");
 
         <!-- Main content -->
         <section class="content">
-        	<%
-        		String companyName = null;
-        		String companyAddress = null;
-        		String mainEmail = null;
-        		String secondaryEmail = null;
-        		Long clientID = null;
-        		
-        		List<ClientAccount> allClients = ClientAccount.getAllClient();
-        	%>
-             <form action="delete-client" method="post">
-			<div class="box">
-                <div class="box-header">
-                  <h3 class="box-title">Current Clients</h3>
-                </div><!-- /.box-header -->
-                <div class="box-body no-padding">
-                  <table class="table table-striped">
-                    <tr>
-                      <th>Delete Client</th>
-                      <th>Company Name</th>
-                      <th>Company Address</th>
-					  <th>Main Email Contact</th>
-                      <th>Secondary Email Contact</th>
-                    </tr>
-             <%
-             	for(int i = 0; i<allClients.size(); i++){
-             		
-             		companyName = allClients.get(i).getCompanyName();
-             		companyAddress = allClients.get(i).getCompanyAddress();
-             		mainEmail = allClients.get(i).getMainEmail();
-             		secondaryEmail = allClients.get(i).getSecondaryEmail();
-             		clientID = allClients.get(i).getId();
-             	
-             	%>
-             	<tr>
-             		<td><input type="checkbox" name="clientIDs" value=<%=clientID %>></td>
-             		<td><a href="updateClient.jsp?clientID=<%=clientID%>"><%=companyName %></a></td>
-             		<td><%=companyAddress %></td>
-             		<td><%=mainEmail %></td>
-             		<td><%=secondaryEmail %></td>
-             	</tr>
-				<%} %>
-			</table>
-			<button type="submit" class="btn btn-primary">Delete Client</button>
-			</form>
+       		<%
+       		PersistenceManager pm = PMF.get().getPersistenceManager();
+       		Long clientID = Long.valueOf(request.getParameter("clientID")).longValue();
+       		ClientAccount e = pm.getObjectById(ClientAccount.class,clientID);
+       		String companyName = e.getCompanyName();
+     		String companyAddress = e.getCompanyAddress();
+     		String mainEmail = e.getMainEmail();
+     		String secondaryEmail = e.getSecondaryEmail();
+     		
+       		
+       		%>
+       		
+       		<form action='/update-client' method='post'>
+       			   <div class="box-body">
+					<div class="form-group">
+                      <label for="exampleInputPassword1">Company Name</label>
+                      <input type="text" class="form-control" name="companyName" placeholder="Company Name" value="<%=companyName%>">
+                    </div>
+					<div class="form-group">
+                      <label for="exampleInputPassword1">Company Address</label>
+                      <input type="text" class="form-control" name="companyAddress" placeholder="Company Address" value="<%=companyAddress%>">
+                    </div>
+					<div class="form-group">
+                      <label for="exampleInputPassword1">Company Email Contact</label>
+                      <input type="text" class="form-control" name="mainEmail" placeholder="Main Email" value ="<%=mainEmail %>">
+                    </div>
+					<div class="form-group">
+                      <label for="exampleInputPassword1">Secondary Email Contact</label>
+                      <input type="text" class="form-control" name="secondaryEmail" placeholder="Second Email" value="<%=secondaryEmail %>">
+                    </div>
+                  </div>
+       			<input type="hidden" name="clientID" value="<%=clientID %>">
+       			<button type="submit" class="btn btn-primary">Update Client</button>
+       		</form>
+       		
         </section><!-- /.content -->
       </div><!-- /.content-wrapper -->
       <footer class="main-footer">

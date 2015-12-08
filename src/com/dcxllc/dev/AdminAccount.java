@@ -14,6 +14,7 @@ import javax.jdo.annotations.PrimaryKey;
 @PersistenceCapable
 public class AdminAccount {
 	
+	
 	 @PrimaryKey
 	    @Persistent(valueStrategy = IdGeneratorStrategy.IDENTITY)
 	    private Long id;

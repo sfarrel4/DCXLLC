@@ -8,23 +8,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("serial")
-public class CreateEmployeeServlet extends HttpServlet {
+public class UpdateClientServlet extends HttpServlet {
 
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		doPost(req, resp);
 	}
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		
-		String username = req.getParameter("username");
-		String password = req.getParameter("password");
-		String firstName = req.getParameter("firstName");
-		String lastName = req.getParameter("lastName");
-		String mainEmail = req.getParameter("mainEmail");
-		String phoneNumber = req.getParameter("phoneNumber");
 		PersistenceManager pm = PMF.get().getPersistenceManager();
-		EmployeeAccount a = new EmployeeAccount(username, password, firstName, lastName, mainEmail, phoneNumber);
+		Long clientID = Long.valueOf(req.getParameter("clientID")).longValue();
+		String companyName = req.getParameter("companyName");
+		String companyAddress = req.getParameter("companyAddress");
+		String mainEmail = req.getParameter("mainEmail");
+		String secondaryEmail = req.getParameter("secondaryEmail");
+		
 		try{
-			pm.makePersistent(a);
+			ClientAccount c = pm.getObjectById(ClientAccount.class, clientID);
+			c.setCompanyAddress(companyAddress);
+			c.setCompanyName(companyName);
+			c.setMainEmail(mainEmail);
+			c.setSecondaryEmail(secondaryEmail);
 			
 		}
 		catch(Exception e){
@@ -33,7 +35,6 @@ public class CreateEmployeeServlet extends HttpServlet {
 		finally{
 			pm.close();
 		}
-		
 		resp.sendRedirect("adminPanel.jsp");
 	}
 

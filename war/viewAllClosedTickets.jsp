@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <%@ page import="java.util.List" %>
-<%@ page import="com.dcxllc.dev.ClientAccount" %>
+<%@ page import="java.util.ArrayList" %>
+<%@ page import="com.dcxllc.dev.EmployeeAccount" %>
+<%@ page import="com.dcxllc.dev.ClosedTicket" %>
 <%@ page import="javax.jdo.PersistenceManager" %>
 <%@ page import="com.dcxllc.dev.PMF" %>
 <%@ page import="javax.jdo.Query" %>
@@ -8,7 +10,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>DCXLLC | Admin</title>
+    <title>DCXLLC | Employee Tickets</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.5 -->
@@ -51,7 +53,12 @@
     		if(cookie.getName().equals("username")) userName = cookie.getValue();
 		}
 	}
-if(userName == null) response.sendRedirect("index.html");
+	if(userName == null) response.sendRedirect("index.html");
+	PersistenceManager pm = PMF.get().getPersistenceManager();
+	Long empID = Long.valueOf(userName).longValue();
+	EmployeeAccount e = pm.getObjectById(EmployeeAccount.class, empID);
+	List<ClosedTicket> ct = ClosedTicket.getAllClosedTickets();
+
 %>
     <div class="wrapper">
 
@@ -61,7 +68,7 @@ if(userName == null) response.sendRedirect("index.html");
           <!-- mini logo for sidebar mini 50x50 pixels -->
           <span class="logo-mini"><b>A</b>LT</span>
           <!-- logo for regular state and mobile devices -->
-          <span class="logo-lg"><b>DCXLLC</b>Admin</span>
+          <span class="logo-lg"><b>DCXLLC</b>--<%=e.getFirstName()%> </span>
         </a>
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top" role="navigation">
@@ -105,14 +112,14 @@ if(userName == null) response.sendRedirect("index.html");
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                   <img src="images/logo.png" class="user-image" alt="User Image">
-                  <span class="hidden-xs"><%=userName %></span>
+                  <span class="hidden-xs"><%=e.getFirstName() %></span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- User image -->
                   <li class="user-header">
                     <img src="images/logo.png" alt="User Image">
                     <p>
-                      DCXLLC - Admin
+                      DCXLLC --<%=e.getFirstName() %>
                       <small></small>
                     </p>
                   </li>
@@ -150,7 +157,7 @@ if(userName == null) response.sendRedirect("index.html");
               <img src="images/logo.png" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
-              <p><%=userName %></p>
+              <p><%=e.getFirstName() %></p>
             </div>
           </div>
           <!-- search form -->
@@ -167,7 +174,7 @@ if(userName == null) response.sendRedirect("index.html");
           <ul class="sidebar-menu">
             <li class="header">MAIN NAVIGATION</li>
             <li>
-              <a href="adminPanel.jsp">
+              <a href="employeePage.jsp">
                 <i class="fa fa-dashboard"></i> <span>Dashboard</span></i>
               </a>
             </li>
@@ -177,31 +184,19 @@ if(userName == null) response.sendRedirect("index.html");
 				</a>
 			</li>
 			<li class="treeview">
-				<a href="#">
-					<i class="fa fa-group"></i> <span>Send Update</span>
+				<a href="employeeViewClient.jsp">
+					<i class="fa fa-group"></i> <span>View Client Info</span>
 					<i class="fa fa-angle-left pull-right"></i>
 				</a>
 			</li>
             <li class="treeview">
               <a href="#">
-                <i class="fa fa-edit"></i> <span>Add New Users</span>
+                <i class="fa fa-edit"></i> <span>Tickets</span>
                 <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="createClient.jsp"><i class="fa fa-circle-o"></i>Add New Client</a></li>
-                <li><a href="createEmployee.jsp"><i class="fa fa-circle-o"></i>Add New Employee</a></li>
-			
-			 </ul>
-            </li>
-            <li class="treeview">
-              <a href="#">
-                <i class="fa fa-table"></i> <span>View Users</span>
-                <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                <li><a href="viewClients.jsp"><i class="fa fa-circle-o"></i>View Clients</a></li>
-				<li><a href="viewEmployees.jsp"><i class="fa fa-circle-o"></i>View Employees</a></li>
-				
+                <li><a href="viewAllOpenTickets.jsp"><i class="fa fa-circle-o"></i>View All Open Tickets</a></li>
+                <li><a href="viewAllClosedTickets.jsp"><i class="fa fa-circle-o"></i>View All Closed Tickets</a></li>
 			 </ul>
             </li>
             <li>
@@ -230,50 +225,75 @@ if(userName == null) response.sendRedirect("index.html");
 
         <!-- Main content -->
         <section class="content">
-        	<%
+           <%
+        		int ticketNumber = 0;
+        		String issueDate = null;
+        		String issueCategory = null;
+        		String issueDescription = null;
+        		String closedDate = null;
+        		Long ticketID = null;
         		String companyName = null;
-        		String companyAddress = null;
-        		String mainEmail = null;
-        		String secondaryEmail = null;
-        		Long clientID = null;
         		
-        		List<ClientAccount> allClients = ClientAccount.getAllClient();
+        		
         	%>
-             <form action="delete-client" method="post">
+             
 			<div class="box">
                 <div class="box-header">
-                  <h3 class="box-title">Current Clients</h3>
+                  <h3 class="box-title">Closed Tickets</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body no-padding">
+                <form action="close-ticket" method="post">
+                <%
+                
+                if(!ct.isEmpty()){%>
                   <table class="table table-striped">
                     <tr>
-                      <th>Delete Client</th>
+                      <th>Ticket Number</th>
                       <th>Company Name</th>
-                      <th>Company Address</th>
-					  <th>Main Email Contact</th>
-                      <th>Secondary Email Contact</th>
+                      <th>Ticket Issue Date</th>
+                      <th>Ticket Closure Date</th>
+					  <th>Type of Issue</th>
+                      <th>Description of Issue</th>
                     </tr>
+                    
              <%
-             	for(int i = 0; i<allClients.size(); i++){
+             	for(int i = 0; i<ct.size(); i++){
+             		ticketNumber = ct.get(i).getTicketNumber();
+             		issueDate = ct.get(i).getDateIssued();
+             		closedDate = ct.get(i).getDateClosed();
+             		issueCategory = ct.get(i).getIssueCategory();
+             		issueDescription = ct.get(i).getIssueDescription();
+             		ticketID = ct.get(i).getTicketID();
+             		companyName = ct.get(i).getCompanyName();
              		
-             		companyName = allClients.get(i).getCompanyName();
-             		companyAddress = allClients.get(i).getCompanyAddress();
-             		mainEmail = allClients.get(i).getMainEmail();
-             		secondaryEmail = allClients.get(i).getSecondaryEmail();
-             		clientID = allClients.get(i).getId();
              	
              	%>
              	<tr>
-             		<td><input type="checkbox" name="clientIDs" value=<%=clientID %>></td>
-             		<td><a href="updateClient.jsp?clientID=<%=clientID%>"><%=companyName %></a></td>
-             		<td><%=companyAddress %></td>
-             		<td><%=mainEmail %></td>
-             		<td><%=secondaryEmail %></td>
+             		
+             		<td><%=ticketNumber %></td>
+             		<td><%=companyName %></td>
+             		<td><%=issueDate %></td>
+             		<td><%=closedDate %></td>
+             		<td><%=issueCategory %></td>
+             		<td><%=issueDescription %></td>
              	</tr>
 				<%} %>
+				<%}
+                else{%>
+                <h1>No Closed Tickets</h1>
+                <% }%>
 			</table>
-			<button type="submit" class="btn btn-primary">Delete Client</button>
-			</form>
+			
+            </form>
+
+             
+         
+            
+
+             
+
+             
+
         </section><!-- /.content -->
       </div><!-- /.content-wrapper -->
       <footer class="main-footer">

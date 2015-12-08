@@ -6,6 +6,7 @@
 <%@ page import="javax.jdo.Query" %>
 <html>
   <head>
+  
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>DCXLLC | Admin</title>
@@ -235,7 +236,7 @@ if(userName == null) response.sendRedirect("index.html");
         		String lastName = null;
         		String mainEmail = null;
         		String phoneNumber = null;
-        		
+        		String empID = null;
         		List<EmployeeAccount> allEmployee = EmployeeAccount.getAllEmployee();
         	%>
              
@@ -244,8 +245,10 @@ if(userName == null) response.sendRedirect("index.html");
                   <h3 class="box-title">Current Employees</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body no-padding">
+                <form action='update-employee' method='post'>
                   <table class="table table-striped">
                     <tr>
+                      <th>Update/Delete</th>
                       <th>Last Name</th>
                       <th>First Name</th>
 					  <th>Main Email Contact</th>
@@ -257,17 +260,22 @@ if(userName == null) response.sendRedirect("index.html");
              		lastName = allEmployee.get(i).getLastName();
              		mainEmail = allEmployee.get(i).getMainEmail();
              		phoneNumber = allEmployee.get(i).getPhoneNumber();
+             		empID = String.valueOf(allEmployee.get(i).getId());
              		
              	
              	%>
              	<tr>
-             		<td><%=lastName %></td>
+             		<td><input type="checkbox" name="empIDs" value=<%=empID %>></td>
+             		<td><a href="updateEmployee.jsp?empID=<%=empID%>"><%=lastName %></a></td>
              		<td><%=firstName %></td>
              		<td><%=mainEmail %></td>
              		<td><%=phoneNumber %></td>
              	</tr>
 				<%} %>
 			</table>
+			<button type="submit" class="btn btn-primary">Delete Employee</button>
+		
+			</form>
         </section><!-- /.content -->
       </div><!-- /.content-wrapper -->
       <footer class="main-footer">
